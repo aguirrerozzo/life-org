@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { title, description, statusId, priority, dueDate, tagIds, isRecurring, recurrenceType, recurrenceDaysOfWeek, recurrenceDay, recurrenceMonth, isPayment, paymentValue } = body;
+  const { title, description, statusId, priority, dueDate, tagIds, isRecurring, recurrenceType, recurrenceDaysOfWeek, recurrenceDay, recurrenceMonth, recurrenceTime, isPayment, paymentValue } = body;
 
   if (!title) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -109,6 +109,7 @@ export async function POST(request: NextRequest) {
       recurrenceDaysOfWeek: recurrenceDaysOfWeek || [],
       recurrenceDay: recurrenceDay || null,
       recurrenceMonth: recurrenceMonth || null,
+      recurrenceTime: recurrenceTime || null,
       templateTitle: generatedTemplateTitle,
       isPayment: isPayment || false,
       paymentValue: isPayment ? (paymentValue !== null && paymentValue !== undefined && paymentValue !== "" ? parseFloat(paymentValue) : null) : null,

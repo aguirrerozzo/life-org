@@ -107,6 +107,7 @@ model Task {
   recurrenceDaysOfWeek Int[]        // Array of days (0-6)
   recurrenceDay  Int?               // Day of month (1-31)
   recurrenceMonth Int?              // Month of year (1-12)
+  recurrenceTime String?            // Time of day (e.g. "09:00", "17:30")
   templateTitle  String?            // Under-the-hood template for title
 
   // Financial fields

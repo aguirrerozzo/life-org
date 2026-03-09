@@ -41,6 +41,7 @@ export interface TaskWithRelations {
   recurrenceDaysOfWeek: number[];
   recurrenceDay: number | null;
   recurrenceMonth: number | null;
+  recurrenceTime: string | null;
   templateTitle: string | null;
   isPayment: boolean;
   paymentValue: number | null;

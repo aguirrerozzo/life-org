@@ -67,6 +67,7 @@ export function TaskDialog({ open, onOpenChange, mode, task, statuses, onSaved, 
     const [recurrenceDaysOfWeek, setRecurrenceDaysOfWeek] = useState<number[]>(task?.recurrenceDaysOfWeek || []);
     const [recurrenceDay, setRecurrenceDay] = useState<number>(task?.recurrenceDay || 1);
     const [recurrenceMonth, setRecurrenceMonth] = useState<number>(task?.recurrenceMonth || 1);
+    const [recurrenceTime, setRecurrenceTime] = useState<string>(task?.recurrenceTime || "");
 
     // Reason Prompt
     const [reasonText, setReasonText] = useState("");
@@ -94,6 +95,7 @@ export function TaskDialog({ open, onOpenChange, mode, task, statuses, onSaved, 
             setRecurrenceDaysOfWeek(task?.recurrenceDaysOfWeek || []);
             setRecurrenceDay(task?.recurrenceDay || 1);
             setRecurrenceMonth(task?.recurrenceMonth || 1);
+            setRecurrenceTime(task?.recurrenceTime || "");
         }
 
         prevOpenRef.current = open;
@@ -119,9 +121,10 @@ export function TaskDialog({ open, onOpenChange, mode, task, statuses, onSaved, 
             paymentValue: isPayment && paymentValue.trim() !== "" ? parseFloat(paymentValue) : null,
             isRecurring,
             recurrenceType: isRecurring ? recurrenceType : null,
-            recurrenceDaysOfWeek: isRecurring && (recurrenceType === "DAILY" || recurrenceType === "WEEKLY") ? recurrenceDaysOfWeek : [],
-            recurrenceDay: isRecurring && (recurrenceType === "MONTHLY" || recurrenceType === "YEARLY") ? recurrenceDay : null,
-            recurrenceMonth: isRecurring && recurrenceType === "YEARLY" ? recurrenceMonth : null,
+            recurrenceDaysOfWeek: isRecurring ? recurrenceDaysOfWeek : [],
+            recurrenceDay: (isRecurring && (recurrenceType === "MONTHLY" || recurrenceType === "YEARLY")) ? recurrenceDay : null,
+            recurrenceMonth: (isRecurring && recurrenceType === "YEARLY") ? recurrenceMonth : null,
+            recurrenceTime: isRecurring ? recurrenceTime : null,
         };
 
         const url = mode === "create" ? "/api/tasks" : `/api/tasks/${task?.id}`;
@@ -381,17 +384,34 @@ export function TaskDialog({ open, onOpenChange, mode, task, statuses, onSaved, 
 
                                             {isRecurring && (
                                                 <div className="space-y-4 pl-7 animate-in fade-in zoom-in-95 duration-200">
-                                                    <div className="space-y-2">
-                                                        <Label className="text-[10px] text-muted-foreground uppercase font-semibold">{locale === "es" ? "Periodicidad" : "Frequency"}</Label>
-                                                        <Select value={recurrenceType} onValueChange={(v: any) => setRecurrenceType(v)}>
-                                                            <SelectTrigger className="h-8 text-xs border-border/80"><SelectValue /></SelectTrigger>
-                                                            <SelectContent>
-                                                                <SelectItem value="DAILY" className="text-xs">{locale === "es" ? "Diario" : "Daily"}</SelectItem>
-                                                                <SelectItem value="WEEKLY" className="text-xs">{locale === "es" ? "Semanal" : "Weekly"}</SelectItem>
-                                                                <SelectItem value="MONTHLY" className="text-xs">{locale === "es" ? "Mensual" : "Monthly"}</SelectItem>
-                                                                <SelectItem value="YEARLY" className="text-xs">{locale === "es" ? "Anual" : "Yearly"}</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] text-muted-foreground uppercase font-semibold">{locale === "es" ? "Periodicidad" : "Frequency"}</Label>
+                                                            <Select value={recurrenceType} onValueChange={(v: any) => setRecurrenceType(v)}>
+                                                                <SelectTrigger className="h-8 text-xs border-border/80"><SelectValue /></SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="DAILY" className="text-xs">{locale === "es" ? "Diario" : "Daily"}</SelectItem>
+                                                                    <SelectItem value="WEEKLY" className="text-xs">{locale === "es" ? "Semanal" : "Weekly"}</SelectItem>
+                                                                    <SelectItem value="MONTHLY" className="text-xs">{locale === "es" ? "Mensual" : "Monthly"}</SelectItem>
+                                                                    <SelectItem value="YEARLY" className="text-xs">{locale === "es" ? "Anual" : "Yearly"}</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] text-muted-foreground uppercase font-semibold flex items-center justify-between">
+                                                                {locale === "es" ? "Hora" : "Time"}
+                                                                {recurrenceTime && (
+                                                                    <button type="button" onClick={() => setRecurrenceTime("")} className="text-[9px] hover:text-destructive opacity-70">Limpiar</button>
+                                                                )}
+                                                            </Label>
+                                                            <Input
+                                                                type="time"
+                                                                value={recurrenceTime}
+                                                                onChange={(e) => setRecurrenceTime(e.target.value)}
+                                                                className="h-8 text-xs border-border/80 px-2"
+                                                            />
+                                                        </div>
                                                     </div>
 
                                                     {(recurrenceType === "DAILY" || recurrenceType === "WEEKLY") && (

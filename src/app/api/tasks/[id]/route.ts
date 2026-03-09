@@ -54,7 +54,7 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { title, description, statusId, priority, dueDate, tagIds, isRecurring, recurrenceType, recurrenceDaysOfWeek, recurrenceDay, recurrenceMonth, isPayment, paymentValue } = body;
+  const { title, description, statusId, priority, dueDate, tagIds, isRecurring, recurrenceType, recurrenceDaysOfWeek, recurrenceDay, recurrenceMonth, recurrenceTime, isPayment, paymentValue } = body;
 
   const data: Record<string, unknown> = {};
   if (title !== undefined) data.title = title;
@@ -69,6 +69,7 @@ export async function PATCH(
   if (recurrenceDaysOfWeek !== undefined) data.recurrenceDaysOfWeek = recurrenceDaysOfWeek;
   if (recurrenceDay !== undefined) data.recurrenceDay = recurrenceDay;
   if (recurrenceMonth !== undefined) data.recurrenceMonth = recurrenceMonth;
+  if (recurrenceTime !== undefined) data.recurrenceTime = recurrenceTime === "" ? null : recurrenceTime;
   if (isPayment !== undefined) data.isPayment = isPayment;
   if (paymentValue !== undefined) data.paymentValue = isPayment ? (paymentValue !== "" && paymentValue !== null && paymentValue !== undefined ? parseFloat(paymentValue) : null) : null;
 
