@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Calendar, MessageSquare, Repeat, Flag } from "lucide-react";
+import { Calendar, MessageSquare, Repeat, Flag, Bell } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { TagBadge } from "@/components/tags/tag-badge";
 import { PRIORITY_COLORS } from "@/types";
@@ -80,6 +80,12 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
                 <span className={`flex items-center gap-1 ${isOverdue ? "text-destructive font-bold" : ""}`}>
                   <Calendar className="h-3 w-3" />
                   {new Date(task.dueDate).toLocaleDateString()}
+                </span>
+              )}
+              {task.reminderTimes && task.reminderTimes.length > 0 && (
+                <span className="flex items-center gap-1 text-primary/80 font-medium">
+                  <Bell className="h-3 w-3" />
+                  {task.reminderTimes.join(", ")}
                 </span>
               )}
               {task.comments?.length > 0 && (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import { Calendar, MessageSquare, Repeat, Flag } from "lucide-react";
+import { Calendar, MessageSquare, Repeat, Flag, Bell } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TagBadge } from "@/components/tags/tag-badge";
 import { PRIORITY_COLORS } from "@/types";
@@ -66,6 +66,12 @@ export function TaskListView({ tasks, statuses, onTaskClick }: TaskListViewProps
                   <span className="text-sm font-medium truncate group-hover:text-primary transition-colors">
                     {task.title}
                   </span>
+                  {task.reminderTimes && task.reminderTimes.length > 0 && (
+                    <span className="flex items-center gap-0.5 text-primary/80 flex-shrink-0">
+                      <Bell className="h-3 w-3" />
+                      <span className="text-[10px] font-medium">{task.reminderTimes.join(", ")}</span>
+                    </span>
+                  )}
                   {task.comments?.length > 0 && (
                     <span className="flex items-center gap-0.5 text-muted-foreground flex-shrink-0">
                       <MessageSquare className="h-3 w-3" />
@@ -129,6 +135,12 @@ export function TaskListView({ tasks, statuses, onTaskClick }: TaskListViewProps
                     <span className={`flex items-center gap-1 ${isOverdue ? "text-destructive" : ""}`}>
                       <Calendar className="h-3 w-3" />
                       {new Date(task.dueDate).toLocaleDateString()}
+                    </span>
+                  )}
+                  {task.reminderTimes && task.reminderTimes.length > 0 && (
+                    <span className="flex items-center gap-0.5 text-primary/80 font-medium">
+                      <Bell className="h-3 w-3" />
+                      {task.reminderTimes.length}
                     </span>
                   )}
                   {task.taskTags?.slice(0, 2).map(({ tag }) => (
