@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+const DEFAULT_STATUSES = [
+    { nameEn: "TODO", nameEs: "POR HACER", color: "oklch(0.75 0.15 85)", order: 0, requiresReason: false },
+    { nameEn: "IN PROGRESS", nameEs: "EN PROGRESO", color: "oklch(0.65 0.18 250)", order: 1, requiresReason: false },
+    { nameEn: "BLOCKED / ON HOLD", nameEs: "BLOQUEADO O EN HOLD", color: "oklch(0.55 0.20 160)", order: 2, requiresReason: true },
+    { nameEn: "DONE", nameEs: "HECHO", color: "oklch(0.60 0.22 30)", order: 3, requiresReason: false },
+];
+
 export async function POST(request: NextRequest) {
     const session = await auth();
     if (!session?.user?.id) {
@@ -27,13 +34,26 @@ export async function POST(request: NextRequest) {
         const skippedRows: Array<{ reason: string; row: any }> = [];
 
         // 1. Fetch all user statuses to map string names to DB IDs
-        const userStatuses = await prisma.status.findMany({
+        let userStatuses = await prisma.status.findMany({
             where: { userId: session.user.id }
         });
+
+        // Lazy creation: if user has no statuses during bulk import, seed defaults
+        if (userStatuses.length === 0) {
+            for (const ds of DEFAULT_STATUSES) {
+                await prisma.status.create({
+                    data: { ...ds, userId: session.user.id },
+                });
+            }
+            userStatuses = await prisma.status.findMany({
+                where: { userId: session.user.id }
+            });
+        }
+
         const statusMap = new Map<string, string>();
         userStatuses.forEach(s => {
-            if (s.nameEn) statusMap.set(s.nameEn.toLowerCase().trim(), s.id);
-            if (s.nameEs) statusMap.set(s.nameEs.toLowerCase().trim(), s.id);
+            if (s.nameEn) statusMap.set(s.nameEn.toLowerCase().replace(/\s+/g, ''), s.id);
+            if (s.nameEs) statusMap.set(s.nameEs.toLowerCase().replace(/\s+/g, ''), s.id);
         });
 
         let fallbackStatusId = defaultStatusId;
@@ -53,7 +73,8 @@ export async function POST(request: NextRequest) {
             // 1. Parse Status (Dynamic mapping)
             let assignedStatusId = fallbackStatusId;
             if (row.Status && row.Status.trim() !== "") {
-                const matchedId = statusMap.get(row.Status.toLowerCase().trim());
+                const normalizedCsvStatus = row.Status.toLowerCase().replace(/\s+/g, '');
+                const matchedId = statusMap.get(normalizedCsvStatus);
                 if (matchedId) {
                     assignedStatusId = matchedId;
                 }
