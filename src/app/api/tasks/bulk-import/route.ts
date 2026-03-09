@@ -16,22 +16,29 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "No tasks provided" }, { status: 400 });
         }
 
+        // Soften validation: Let backend fetch statuses if front-end fails.
         if (!defaultStatusId) {
-            return NextResponse.json({ error: "No default status found" }, { status: 400 });
+            console.warn("No defaultStatusId provided by client, will fetch from DB");
         }
 
-        // Get the current max order for the default status to append these new tasks at the bottom
-        const maxOrderAgg = await prisma.task.aggregate({
-            where: { userId: session.user.id, statusId: defaultStatusId },
-            _max: { order: true },
-        });
-        let currentOrder = (maxOrderAgg._max.order ?? -1) + 1;
-
+        // We will do dynamic ordering per status in the loop instead to maintain Kanban sorting.
+        const orderMap = new Map<string, number>();
         let successCount = 0;
 
-        // Use a transaction to ensure either all import or none (optional, but safer)
-        // However, given that users might have bad rows, we'll process sequentially to skip bad rows
-        // and just report total created. For speed on small sets (100-500), sequential is fine.
+        // 1. Fetch all user statuses to map string names to DB IDs
+        const userStatuses = await prisma.status.findMany({
+            where: { userId: session.user.id }
+        });
+        const statusMap = new Map<string, string>();
+        userStatuses.forEach(s => {
+            if (s.nameEn) statusMap.set(s.nameEn.toLowerCase().trim(), s.id);
+            if (s.nameEs) statusMap.set(s.nameEs.toLowerCase().trim(), s.id);
+        });
+
+        let fallbackStatusId = defaultStatusId;
+        if (!fallbackStatusId && userStatuses.length > 0) {
+            fallbackStatusId = userStatuses[0].id; // ultimate fallback
+        }
 
         // Quick cache for tags to avoid hammering the DB for every row
         const tagMap = new Map<string, string>();
@@ -39,9 +46,19 @@ export async function POST(request: NextRequest) {
         for (const row of tasks) {
             if (!row.Title || row.Title.trim() === "") continue;
 
-            // 1. Parse Status (use default if missing or let's assume all go to default for now as we don't know status IDs from names safely)
-            // If we wanted to parse string "status", we'd need to pre-fetch all statuses and map them by name. Let's do that:
-            // Actually, standardizing on front-end's defaultStatusId ensures they don't break the kanban. 
+            // 1. Parse Status (Dynamic mapping)
+            let assignedStatusId = fallbackStatusId;
+            if (row.Status && row.Status.trim() !== "") {
+                const matchedId = statusMap.get(row.Status.toLowerCase().trim());
+                if (matchedId) {
+                    assignedStatusId = matchedId;
+                }
+            }
+
+            if (!assignedStatusId) {
+                // If completely stripped of statuses (e.g. brand new user with broken DB state)
+                continue;
+            }
 
             // 2. Parse Priority
             const validPriorities = ["LOW", "MEDIUM", "HIGH"];
@@ -116,12 +133,22 @@ export async function POST(request: NextRequest) {
             // Note: RemindersPreAlertMinutes is parsed here but requires future Schema modification.
             // Ignoring for DB insertion right now until Phase 3 AI Reminders schema is built.
 
+            // Determine order dynamically based on the specific column it's going into
+            let currentOrder = orderMap.get(assignedStatusId);
+            if (currentOrder === undefined) {
+                const maxOrderAgg = await prisma.task.aggregate({
+                    where: { userId: session.user.id, statusId: assignedStatusId },
+                    _max: { order: true }
+                });
+                currentOrder = (maxOrderAgg._max.order ?? -1) + 1;
+            }
+
             // Insert Task
             await prisma.task.create({
                 data: {
                     title: row.Title.trim(),
                     description: row.Description?.trim() || "",
-                    statusId: defaultStatusId,
+                    statusId: assignedStatusId,
                     priority,
                     dueDate,
                     order: currentOrder,
@@ -143,7 +170,7 @@ export async function POST(request: NextRequest) {
                 }
             });
 
-            currentOrder++;
+            orderMap.set(assignedStatusId, currentOrder + 1);
             successCount++;
         }
 
