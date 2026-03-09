@@ -10,6 +10,7 @@ import { TaskFilters } from "@/components/tasks/task-filters";
 import { TaskSummary } from "@/components/tasks/task-summary";
 import { ViewToggle } from "@/components/tasks/view-toggle";
 import { TaskDialog } from "@/components/tasks/task-dialog";
+import { BulkImportDialog } from "@/components/tasks/bulk-import-dialog";
 import type { TaskWithRelations, StatusData } from "@/types";
 
 interface TasksPageClientProps {
@@ -74,6 +75,7 @@ export function TasksPageClient({ initialTasks, statuses, tags }: TasksPageClien
             <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
             <div className="flex items-center gap-2">
               <ViewToggle />
+              <BulkImportDialog onSaved={refresh} statuses={statuses} />
               <button
                 onClick={() => setCreateOpen(true)}
                 className="inline-flex items-center justify-center rounded-md h-8 px-3 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
