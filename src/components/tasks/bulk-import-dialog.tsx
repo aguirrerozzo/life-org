@@ -49,29 +49,9 @@ export function BulkImportDialog({ onSaved, statuses }: BulkImportDialogProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const TEMPLATE_HEADERS = [
-        "Title",
-        "Description",
-        "Status",
-        "Priority",
-        "DueDate",
-        "Cost",
-        "IsRecurring",
-        "RecurrenceType",
-        "Tags",
-        "RemindersPreAlertMinutes"
-    ];
-
     const handleDownloadTemplate = () => {
-        const csvContent = "data:text/csv;charset=utf-8," + TEMPLATE_HEADERS.join(",") + "\n" +
-            "Buy groceries (Simple Task),Milk and eggs,To Do,MEDIUM,2024-12-31,,,false,,,\n" +
-            "Pay Electricity (Payment & Recurring),Invoice #1234,To Do,HIGH,2024-12-15,100.00,true,MONTHLY,Pago,1440\n" +
-            "Doctor Appointment (Alerts & Tags),Annual Checkup Dr. Smith,To Do,HIGH,2024-11-20,,,false,,Health,60\n" +
-            "Gym Membership (Low Priority Recurring),Planet Fitness,To Do,LOW,,20.00,true,MONTHLY,Health,0";
-
-        const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
+        link.setAttribute("href", "/life_org_tasks_template.csv?v=2");
         link.setAttribute("download", "life_org_tasks_template.csv");
         document.body.appendChild(link);
         link.click();
