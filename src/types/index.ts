@@ -35,6 +35,7 @@ export interface TaskWithRelations {
   statusRel: StatusData;
   priority: Priority;
   dueDate: string | null;
+  reminderTimes: string[];
   order: number;
   isRecurring: boolean;
   recurrenceType: RecurrenceType | null;

@@ -99,6 +99,7 @@ model Task {
   statusRel   Status     @relation(fields: [statusId], references: [id], onDelete: Cascade)
   priority    Priority   @default(MEDIUM)
   dueDate     DateTime?
+  reminderTimes String[]        // Array of times e.g. ["09:00", "14:30"]
   order       Int        @default(0)
 
   // Recurring task fields

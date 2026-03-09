@@ -11,6 +11,7 @@ import { TaskSummary } from "@/components/tasks/task-summary";
 import { ViewToggle } from "@/components/tasks/view-toggle";
 import { TaskDialog } from "@/components/tasks/task-dialog";
 import { BulkImportDialog } from "@/components/tasks/bulk-import-dialog";
+import { TaskRemindersWatcher } from "@/components/tasks/task-reminders-watcher";
 import type { TaskWithRelations, StatusData } from "@/types";
 
 interface TasksPageClientProps {
@@ -109,6 +110,7 @@ export function TasksPageClient({ initialTasks, statuses, tags }: TasksPageClien
       </div>
 
       {/* Detail Panel */}
+      <TaskRemindersWatcher tasks={initialTasks} />
       <TaskDialog
         open={!!selectedTask || createOpen}
         onOpenChange={(open) => {

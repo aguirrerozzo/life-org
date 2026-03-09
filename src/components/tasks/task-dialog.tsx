@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Plus, Repeat, Calendar, FolderOpen, AlertTriangle, CircleDot, Tag, MessageSquare, Trash2, Edit2, X, DollarSign } from "lucide-react";
+import { Plus, Repeat, Calendar, FolderOpen, AlertTriangle, CircleDot, Tag, MessageSquare, Trash2, Edit2, X, DollarSign, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,6 +68,7 @@ export function TaskDialog({ open, onOpenChange, mode, task, statuses, onSaved, 
     const [recurrenceDay, setRecurrenceDay] = useState<number>(task?.recurrenceDay || 1);
     const [recurrenceMonth, setRecurrenceMonth] = useState<number>(task?.recurrenceMonth || 1);
     const [recurrenceTime, setRecurrenceTime] = useState<string>(task?.recurrenceTime || "");
+    const [reminderTimes, setReminderTimes] = useState<string[]>(task?.reminderTimes || []);
 
     // Reason Prompt
     const [reasonText, setReasonText] = useState("");
@@ -96,6 +97,7 @@ export function TaskDialog({ open, onOpenChange, mode, task, statuses, onSaved, 
             setRecurrenceDay(task?.recurrenceDay || 1);
             setRecurrenceMonth(task?.recurrenceMonth || 1);
             setRecurrenceTime(task?.recurrenceTime || "");
+            setReminderTimes(task?.reminderTimes || []);
         }
 
         prevOpenRef.current = open;
@@ -125,6 +127,7 @@ export function TaskDialog({ open, onOpenChange, mode, task, statuses, onSaved, 
             recurrenceDay: (isRecurring && (recurrenceType === "MONTHLY" || recurrenceType === "YEARLY")) ? recurrenceDay : null,
             recurrenceMonth: (isRecurring && recurrenceType === "YEARLY") ? recurrenceMonth : null,
             recurrenceTime: isRecurring ? recurrenceTime : null,
+            reminderTimes,
         };
 
         const url = mode === "create" ? "/api/tasks" : `/api/tasks/${task?.id}`;
@@ -360,6 +363,73 @@ export function TaskDialog({ open, onOpenChange, mode, task, statuses, onSaved, 
                                                 <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5"><DollarSign className="h-3 w-3" /> {locale === "es" ? "Monto" : "Amount"}</Label>
                                                 <div className="text-sm border border-transparent py-1 font-medium text-primary">
                                                     {paymentValue ? `$${new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(paymentValue))}` : <span className="text-muted-foreground font-normal italic">Sin valor</span>}
+                                                </div>
+                                            </div>
+                                        )
+                                    )}
+
+                                    {/* Reminders Block */}
+                                    {isEditing ? (
+                                        <div className="space-y-3 pt-4 border-t border-border/40">
+                                            <div className="flex items-center justify-between">
+                                                <Label className="flex items-center gap-1.5 cursor-pointer font-semibold text-sm">
+                                                    <Bell className="h-4 w-4 text-primary" />
+                                                    {locale === "es" ? "Recordatorios (Hora)" : "Reminders (Time)"}
+                                                </Label>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-7 text-[10px] px-2"
+                                                    onClick={() => setReminderTimes([...reminderTimes, "09:00"])}
+                                                >
+                                                    <Plus className="h-3 w-3 mr-1" />
+                                                    {locale === "es" ? "Añadir" : "Add"}
+                                                </Button>
+                                            </div>
+
+                                            {reminderTimes.length > 0 && (
+                                                <div className="space-y-2 pl-7 animate-in fade-in zoom-in-95 duration-200">
+                                                    {reminderTimes.map((rt, idx) => (
+                                                        <div key={idx} className="flex items-center gap-2">
+                                                            <Input
+                                                                type="time"
+                                                                value={rt}
+                                                                onChange={(e) => {
+                                                                    const newArr = [...reminderTimes];
+                                                                    newArr[idx] = e.target.value;
+                                                                    setReminderTimes(newArr);
+                                                                }}
+                                                                className="h-8 text-xs border-border/80 px-2 w-32"
+                                                            />
+                                                            <Button
+                                                                type="button"
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                                                                onClick={() => {
+                                                                    const newArr = [...reminderTimes];
+                                                                    newArr.splice(idx, 1);
+                                                                    setReminderTimes(newArr);
+                                                                }}
+                                                            >
+                                                                <X className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        reminderTimes && reminderTimes.length > 0 && (
+                                            <div className="space-y-2 pt-2 pb-1">
+                                                <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5"><Bell className="h-3 w-3" /> {locale === "es" ? "Recordatorios" : "Reminders"}</Label>
+                                                <div className="flex flex-wrap gap-1.5 min-h-[28px]">
+                                                    {reminderTimes.map((rt, i) => (
+                                                        <Badge key={i} variant="secondary" className="text-[10px] px-2 py-0.5 border">
+                                                            {rt}
+                                                        </Badge>
+                                                    ))}
                                                 </div>
                                             </div>
                                         )
