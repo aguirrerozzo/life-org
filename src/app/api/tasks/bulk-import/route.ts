@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
         // We will do dynamic ordering per status in the loop instead to maintain Kanban sorting.
         const orderMap = new Map<string, number>();
         let successCount = 0;
+        const skippedRows: Array<{ reason: string; row: any }> = [];
 
         // 1. Fetch all user statuses to map string names to DB IDs
         const userStatuses = await prisma.status.findMany({
@@ -44,7 +45,10 @@ export async function POST(request: NextRequest) {
         const tagMap = new Map<string, string>();
 
         for (const row of tasks) {
-            if (!row.Title || row.Title.trim() === "") continue;
+            if (!row.Title || row.Title.trim() === "") {
+                skippedRows.push({ reason: "Missing or empty Title. Ensure CSV headers exactly match 'Title'.", row });
+                continue;
+            }
 
             // 1. Parse Status (Dynamic mapping)
             let assignedStatusId = fallbackStatusId;
@@ -56,6 +60,7 @@ export async function POST(request: NextRequest) {
             }
 
             if (!assignedStatusId) {
+                skippedRows.push({ reason: "No assignedStatusId found. Ensure user has Status columns in DB.", row });
                 // If completely stripped of statuses (e.g. brand new user with broken DB state)
                 continue;
             }
@@ -174,7 +179,7 @@ export async function POST(request: NextRequest) {
             successCount++;
         }
 
-        return NextResponse.json({ success: true, count: successCount }, { status: 201 });
+        return NextResponse.json({ success: true, count: successCount, skipped: skippedRows }, { status: 201 });
 
     } catch (error: any) {
         console.error("Bulk Import Error:", error);

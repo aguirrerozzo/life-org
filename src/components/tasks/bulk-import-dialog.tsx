@@ -123,6 +123,15 @@ export function BulkImportDialog({ onSaved, statuses }: BulkImportDialogProps) {
 
             const result = await response.json();
 
+            if (result.count === 0 && result.skipped && result.skipped.length > 0) {
+                const firstError = result.skipped[0];
+                throw new Error(
+                    locale === "es"
+                        ? `0 importadas. Motivo de rechazo de la Fila 1: ${firstError.reason} (Raw Data: ${JSON.stringify(firstError.row)})`
+                        : `0 imported. Row 1 rejection reason: ${firstError.reason} (Raw Data: ${JSON.stringify(firstError.row)})`
+                );
+            }
+
             toast.success(
                 locale === "es"
                     ? `¡${result.count} tareas importadas con éxito!`
