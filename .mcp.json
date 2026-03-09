@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "life-org": {
+      "command": "node",
+      "args": ["mcp-server/dist/index.js"],
+      "env": {
+        "DATABASE_URL": "postgresql://neondb_owner:npg_G0mOIsa9TRFh@ep-curly-fog-a4h8yqpf-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require",
+        "USER_EMAIL": "demo@lifeorg.app"
+      }
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "common": {
+    "appName": "Life Org",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar...",
+    "loading": "Cargando...",
+    "noResults": "No se encontraron resultados",
+    "confirm": "Confirmar",
+    "close": "Cerrar"
+  },
+  "auth": {
+    "login": "Iniciar Sesion",
+    "logout": "Cerrar Sesion",
+    "register": "Registrarse",
+    "email": "Correo Electronico",
+    "password": "Contrasena",
+    "name": "Nombre",
+    "loginTitle": "Bienvenido",
+    "loginSubtitle": "Inicia sesion para gestionar tus tareas",
+    "registerTitle": "Crear Cuenta",
+    "registerSubtitle": "Comienza con Life Org",
+    "orContinueWith": "O continua con",
+    "noAccount": "No tienes cuenta?",
+    "hasAccount": "Ya tienes cuenta?",
+    "signInWith": "Iniciar sesion con {provider}"
+  },
+  "tasks": {
+    "title": "Tareas",
+    "newTask": "Nueva Tarea",
+    "editTask": "Editar Tarea",
+    "deleteTask": "Eliminar Tarea",
+    "deleteConfirm": "Estas seguro de que quieres eliminar esta tarea? Esta accion no se puede deshacer.",
+    "taskTitle": "Titulo",
+    "description": "Descripcion",
+    "status": "Estado",
+    "priority": "Prioridad",
+    "category": "Categoria",
+    "dueDate": "Fecha Limite",
+    "tags": "Etiquetas",
+    "comments": "Comentarios",
+    "addComment": "Agregar un comentario...",
+    "noTasks": "No hay tareas aun. Crea tu primera tarea!",
+    "listView": "Vista de Lista",
+    "boardView": "Vista de Tablero",
+    "filters": "Filtros",
+    "clearFilters": "Limpiar Filtros",
+    "overdue": "Vencida",
+    "search": "Buscar tareas...",
+    "cancel": "Cancelar",
+    "recurring": "Recurrente mensual",
+    "recurrenceDay": "Dia del mes",
+    "templateTitle": "Plantilla de titulo",
+    "manageStatuses": "Gestionar Estados",
+    "requiresReason": "Requiere Razón"
+  },
+  "status": {
+    "TODO": "Por Hacer",
+    "IN_PROGRESS": "En Progreso",
+    "BLOCKED_OR_ON_HOLD": "Bloqueado o en Hold",
+    "DONE": "Hecho"
+  },
+  "priority": {
+    "LOW": "Baja",
+    "MEDIUM": "Media",
+    "HIGH": "Alta",
+    "URGENT": "Urgente"
+  },
+  "nav": {
+    "tasks": "Tareas",
+    "settings": "Configuracion",
+    "allTasks": "Todas las Tareas"
+  }
+}

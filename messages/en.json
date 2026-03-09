@@ -1,0 +1,77 @@
+{
+  "common": {
+    "appName": "Life Org",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search...",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "auth": {
+    "login": "Log In",
+    "logout": "Log Out",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "loginTitle": "Welcome Back",
+    "loginSubtitle": "Sign in to manage your tasks",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Get started with Life Org",
+    "orContinueWith": "Or continue with",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signInWith": "Sign in with {provider}"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "newTask": "New Task",
+    "editTask": "Edit Task",
+    "deleteTask": "Delete Task",
+    "deleteConfirm": "Are you sure you want to delete this task? This action cannot be undone.",
+    "taskTitle": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "category": "Category",
+    "dueDate": "Due Date",
+    "tags": "Tags",
+    "comments": "Comments",
+    "addComment": "Add a comment...",
+    "noTasks": "No tasks yet. Create your first task!",
+    "listView": "List View",
+    "boardView": "Board View",
+    "filters": "Filters",
+    "clearFilters": "Clear Filters",
+    "overdue": "Overdue",
+    "search": "Search tasks...",
+    "cancel": "Cancel",
+    "recurring": "Monthly recurring",
+    "recurrenceDay": "Day of month",
+    "templateTitle": "Title template",
+    "manageStatuses": "Manage Statuses",
+    "requiresReason": "Requires Reason"
+  },
+  "status": {
+    "TODO": "To Do",
+    "IN_PROGRESS": "In Progress",
+    "BLOCKED_OR_ON_HOLD": "Blocked / On Hold",
+    "DONE": "Done"
+  },
+  "priority": {
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High",
+    "URGENT": "Urgent"
+  },
+  "nav": {
+    "tasks": "Tasks",
+    "settings": "Settings",
+    "allTasks": "All Tasks"
+  }
+}
