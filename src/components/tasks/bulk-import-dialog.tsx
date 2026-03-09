@@ -64,8 +64,10 @@ export function BulkImportDialog({ onSaved, statuses }: BulkImportDialogProps) {
 
     const handleDownloadTemplate = () => {
         const csvContent = "data:text/csv;charset=utf-8," + TEMPLATE_HEADERS.join(",") + "\n" +
-            "Buy groceries,Milk and eggs,To Do,MEDIUM,2024-12-31,25.50,false,,,120\n" +
-            "Pay Electricity,Invoice #1234,To Do,HIGH,2024-12-15,100.00,true,MONTHLY,,1440";
+            "Buy groceries (Simple Task),Milk and eggs,To Do,MEDIUM,2024-12-31,,,false,,,\n" +
+            "Pay Electricity (Payment & Recurring),Invoice #1234,To Do,HIGH,2024-12-15,100.00,true,MONTHLY,Pago,1440\n" +
+            "Doctor Appointment (Alerts & Tags),Annual Checkup Dr. Smith,To Do,HIGH,2024-11-20,,,false,,Health,60\n" +
+            "Gym Membership (Low Priority Recurring),Planet Fitness,To Do,LOW,,20.00,true,MONTHLY,Health,0";
 
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
@@ -186,15 +188,25 @@ export function BulkImportDialog({ onSaved, statuses }: BulkImportDialogProps) {
                 </DialogHeader>
 
                 <div className="grid gap-6 py-4">
-                    <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center bg-muted/50 p-4 rounded-lg border border-border/50">
-                        <div className="text-sm">
-                            <p className="font-medium">{locale === "es" ? "1. Descarga la Plantilla" : "1. Download Template"}</p>
-                            <p className="text-muted-foreground">{locale === "es" ? "Incluye los encabezados necesarios." : "Includes all the required headers."}</p>
+                    <div className="flex flex-col gap-4 bg-muted/50 p-4 rounded-lg border border-border/50">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div className="text-sm">
+                                <p className="font-medium text-base mb-1">{locale === "es" ? "1. Descarga la Plantilla" : "1. Download Template"}</p>
+                                <p className="text-muted-foreground">{locale === "es" ? "Incluye 4 ejemplos complejos para guiarte." : "Includes 4 complex examples to guide you."}</p>
+                            </div>
+                            <Button variant="secondary" size="sm" onClick={handleDownloadTemplate} className="gap-2 shrink-0">
+                                <FileDown className="h-4 w-4" />
+                                Template.csv
+                            </Button>
                         </div>
-                        <Button variant="secondary" size="sm" onClick={handleDownloadTemplate} className="gap-2">
-                            <FileDown className="h-4 w-4" />
-                            Template.csv
-                        </Button>
+                        <div className="text-xs text-muted-foreground space-y-1.5 border-t border-border/50 pt-3">
+                            <p><strong className="text-foreground">Priority:</strong> LOW | MEDIUM | HIGH</p>
+                            <p><strong className="text-foreground">DueDate:</strong> YYYY-MM-DD (ej: 2024-12-31)</p>
+                            <p><strong className="text-foreground">IsRecurring:</strong> true | false</p>
+                            <p><strong className="text-foreground">RecurrenceType:</strong> DAILY | WEEKLY | MONTHLY | YEARLY</p>
+                            <p><strong className="text-foreground">Tags:</strong> {locale === "es" ? "Separadas por comas (ej: Casa, Trabajo)" : "Comma-separated (e.g., Home, Work)"}</p>
+                            <p><strong className="text-foreground">Cost:</strong> {locale === "es" ? "Solo números y puntos (ej: 150.50)" : "Numbers and dots only (e.g., 150.50)"}</p>
+                        </div>
                     </div>
 
                     <div className="flex flex-col gap-2">
