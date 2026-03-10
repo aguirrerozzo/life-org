@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { UserMenu } from "@/components/auth/user-menu";
 import { LocaleSwitcher } from "./locale-switcher";
 import { ThemeToggle } from "./theme-toggle";
+import { FloatingChat } from "@/components/chat/floating-chat";
 
 export function AppShell({ children, sidebarSlot }: { children: React.ReactNode; sidebarSlot?: React.ReactNode }) {
   const t = useTranslations();
@@ -73,6 +74,8 @@ export function AppShell({ children, sidebarSlot }: { children: React.ReactNode;
           {children}
         </main>
       </div>
+      {/* Floating Chat UI */}
+      <FloatingChat />
     </div>
   );
 }

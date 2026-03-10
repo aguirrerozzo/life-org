@@ -22,6 +22,8 @@ model User {
   tasks         Task[]
   comments      Comment[]
   statuses      Status[]
+  channelConnections ChannelConnection[]
+  messages      Message[]
   createdAt     DateTime  @default(now())
 }
 
@@ -154,4 +156,30 @@ model TaskTag {
   tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([taskId, tagId])
+}
+
+// ─── AI Integrations & Messaging ───
+
+model ChannelConnection {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform   String   // "whatsapp", "telegram", "slack", "web", "email"
+  channelId  String   @unique // The phone number, Chat ID, Slack ID, or Email address
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, platform])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       String   // "user", "assistant", "system", "tool"
+  content    String?  @db.Text
+  toolCalls  Json?    // Optional storage for stringified tool calls
+  platform   String   // Where did this message happen? (e.g. "web", "whatsapp")
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
 }
