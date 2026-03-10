@@ -10,11 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Bot } from "lucide-react";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 
 export function UserMenu() {
   const { data: session } = useSession();
   const t = useTranslations("auth");
+  const locale = useLocale();
 
   if (!session?.user) return null;
 
@@ -37,6 +40,16 @@ export function UserMenu() {
           <p className="text-sm font-medium">{session.user.name}</p>
           <p className="text-xs text-muted-foreground">{session.user.email}</p>
         </div>
+        <DropdownMenuSeparator />
+
+        {/* Integrations Link */}
+        <DropdownMenuItem>
+          <Link href={`/${locale}/settings/integrations`} className="cursor-pointer w-full flex items-center">
+            <Bot className="mr-2 h-4 w-4" />
+            Integrations
+          </Link>
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/login" })}>
           <LogOut className="mr-2 h-4 w-4" />

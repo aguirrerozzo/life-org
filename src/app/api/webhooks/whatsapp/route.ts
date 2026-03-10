@@ -169,7 +169,7 @@ RULES:
                         });
 
                         return {
-                            summary: \`Found \${tasks.length} tasks matching criteria.\`,
+                            summary: `Found ${tasks.length} tasks matching criteria.`,
                             tasks: tasks.map(t => ({
                                 title: t.title,
                                 priority: t.priority,
@@ -201,24 +201,24 @@ RULES:
         const INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME;
 
         if (EVOLUTION_API_URL && EVOLUTION_API_KEY && INSTANCE_NAME) {
-             await fetch(\`\${EVOLUTION_API_URL}/message/sendText/\${INSTANCE_NAME}\`, {
-                 method: 'POST',
-                 headers: {
-                     'Content-Type': 'application/json',
-                     'apikey': EVOLUTION_API_KEY
-                 },
-                 body: JSON.stringify({
-                     number: remoteJid,
-                     options: {
-                         delay: 1200, // Small delay to look human
-                     },
-                     textMessage: {
-                         text: assistantReply
-                     }
-                 })
-             });
+            await fetch(`${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': EVOLUTION_API_KEY
+                },
+                body: JSON.stringify({
+                    number: remoteJid,
+                    options: {
+                        delay: 1200, // Small delay to look human
+                    },
+                    textMessage: {
+                        text: assistantReply
+                    }
+                })
+            });
         } else {
-             console.warn("Evolution API credentials not configured. WhatsApp reply skipped.");
+            console.warn("Evolution API credentials not configured. WhatsApp reply skipped.");
         }
 
         return new Response("OK", { status: 200 });
